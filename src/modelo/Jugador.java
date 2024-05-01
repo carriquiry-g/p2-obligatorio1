@@ -1,21 +1,22 @@
 package modelo;
 
 public class Jugador {
+
     private String nombre;
     private int edad;
     private String alias;
-    private int partidasTotales;
-    private int partidasGanadas;
-    private int partidasPerdidas;
-    private int partidasAbandonadas;
-    private int puntaje;
-
-    public Jugador(String nombre, int edad, String alias){
+    private int partidasTotales = 0;
+    private int partidasGanadas = 0;
+    private int partidasPerdidas = 0;
+    private int partidasAbandonadas = 0;
+    private int puntaje = 0;
+    
+    public Jugador(String nombre, int edad, String alias) {
         this.setNombre(nombre);
         this.setEdad(edad);
         this.setAlias(alias);
     }
-    
+
     public String getNombre() {
         return this.nombre;
     }
@@ -78,5 +79,10 @@ public class Jugador {
 
     public void setPuntaje(int puntaje) {
         this.puntaje = puntaje;
+    }
+
+    @Override
+    public String toString() {
+        return this.getNombre() + " (" + this.getAlias() + ")";
     }
 }

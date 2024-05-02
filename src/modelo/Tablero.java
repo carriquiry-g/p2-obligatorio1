@@ -3,28 +3,36 @@ package modelo;
 import java.util.ArrayList;
 
 public class Tablero {
+
     private int dimension;
     private ArrayList<Autito> listaAutos;
     private ArrayList<Color> listaColores;
 
-    public Tablero(){
-        //TODO: generar valores por defecto
-    }
-    
-    public Tablero(int dimension, ArrayList<Autito> listaAutos, ArrayList<Color> listaColores){
-        this.setDimension(dimension);
-        this.setListaAutos(listaAutos);
+    public Tablero(int tipoTablero, ArrayList<Color> colores) {
+        switch (tipoTablero) {
+            case 1:
+                //Al azar
+                break;
+            case 2:
+                //Configurado por el usuario
+                break;
+            case 3:
+                //Predefinido
+                break;
+            default:
+                break;
+        }
         this.setListaColores(listaColores);
     }
-    
-    public void rotar(){
+
+    public void rotar() {
         //TODO: rotar tablero
     }
-    
-    public void obtenerPosiblesMovimientos(){
+
+    public void obtenerPosiblesMovimientos() {
         //TODO: devolver posibles movimientos
     }
-    
+
     public int getDimension() {
         return this.dimension;
     }
@@ -47,5 +55,5 @@ public class Tablero {
 
     public void setListaColores(ArrayList<Color> listaColores) {
         this.listaColores = listaColores;
-    }   
+    }
 }

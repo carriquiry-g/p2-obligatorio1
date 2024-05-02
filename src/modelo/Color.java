@@ -1,17 +1,18 @@
 package modelo;
 
 public class Color {
+
     private int r;
     private int g;
     private int b;
-    
-    public Color(){
+
+    public Color() {
         this.setR(0);
         this.setG(0);
         this.setB(0);
     }
-    
-    public Color(int r, int g, int b){
+
+    public Color(int r, int g, int b) {
         this.setR(r);
         this.setG(g);
         this.setB(b);
@@ -39,5 +40,10 @@ public class Color {
 
     public void setB(int b) {
         this.b = b;
+    }
+
+    @Override
+    public String toString() {
+        return "Color: " + this.getR() + "(R), " + this.getG() + "(G), " + this.getB() + "(B).";
     }
 }

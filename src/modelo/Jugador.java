@@ -11,6 +11,12 @@ public class Jugador {
     private int partidasAbandonadas = 0;
     private int puntaje = 0;
     
+    public Jugador(){
+        this.setNombre("undefined");
+        this.setEdad(-1);
+        this.setAlias("undefined");
+    }
+    
     public Jugador(String nombre, int edad, String alias) {
         this.setNombre(nombre);
         this.setEdad(edad);
@@ -84,5 +90,9 @@ public class Jugador {
     @Override
     public String toString() {
         return this.getNombre() + " (" + this.getAlias() + ")";
+    }
+    
+    public boolean equals(Jugador otroJugador) {
+        return this.getAlias().equals(otroJugador.getAlias());
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Sistema {
@@ -15,9 +16,20 @@ public class Sistema {
     public Sistema() {
         listaJugadores = new ArrayList<>();
         scanner = new Scanner(System.in);
+        this.agregarJugador(new Jugador("asfsa", 523, "pussy_destroyer"));
+        this.agregarJugador(new Jugador("Juan", 25, "el_pro"));
+        this.agregarJugador(new Jugador("Ana", 30, "mvp_queen"));
+        this.agregarJugador(new Jugador("Pedro", 28, "fast_racer"));
+        this.agregarJugador(new Jugador("Maria", 22, "snipe_girl"));
+        this.agregarJugador(new Jugador("Carlos", 35, "tank_master"));
+        this.agregarJugador(new Jugador("Luis", 40, "legend_hunter"));
+        this.agregarJugador(new Jugador("Elena", 27, "shadow_assassin"));
+        this.agregarJugador(new Jugador("Miguel", 32, "sniper_king"));
+        this.agregarJugador(new Jugador("Lucia", 24, "speed_demon"));
+        this.agregarJugador(new Jugador("Roberto", 29, "strong_warrior"));
     }
-    
-    public ArrayList<Jugador> getListaJugadores(){
+
+    public ArrayList<Jugador> getListaJugadores() {
         return listaJugadores;
     }
 
@@ -35,9 +47,9 @@ public class Sistema {
 
     public void eliminarJugador(String alias) {
         Iterator<Jugador> iterator = this.getListaJugadores().iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Jugador jugador = iterator.next();
-            if(jugador.getAlias().equalsIgnoreCase(alias)){
+            if (jugador.getAlias().equalsIgnoreCase(alias)) {
                 this.getListaJugadores().remove(jugador);
             }
         }
@@ -78,7 +90,7 @@ public class Sistema {
         return aliasFormateado;
     }
 
-    public void registrarJugador() {
+    public Jugador registrarJugador() {
         System.out.println("-- Registrando nuevo jugador --");
 
         String nombre;
@@ -87,7 +99,7 @@ public class Sistema {
 
         System.out.print("Ingrese su nombre: ");
         nombre = scanner.nextLine();
-        
+
         while (edad < 0) { //solo uso while en edad porque es el unico que puede tener error por tipado
             try {
                 System.out.print("Ingrese su edad: ");
@@ -114,7 +126,8 @@ public class Sistema {
 
         Jugador nuevoJugador = new Jugador(nombre, edad, alias);
         this.agregarJugador(nuevoJugador);
-        System.out.println("Jugador " + alias + " registrado con exito.");
+        System.out.println("Jugador " + nuevoJugador + " registrado con exito.");
+        return nuevoJugador;
     }
 
     public boolean verificarUnicidadAlias(String alias) {
@@ -127,8 +140,124 @@ public class Sistema {
 
         return aliasExiste;
     }
-    
-    public void mostrarMenu(){
-        
+
+    public void mostrarMenu() {
+        System.out.println(" _______________________________________________________________________________________________________________________");
+        System.out.println("|\t     _   _   _ _____ ___ _____ ___  ____     ____ _   _  ___   ____    _    ____   ___  ____  _____ ____  \t|");
+        System.out.println("|\t    / \\ | | | |_   _|_ _|_   _/ _ \\/ ___|   / ___| | | |/ _ \\ / ___|  / \\  |  _ \\ / _ \\|  _ \\| ____/ ___| \t|");
+        System.out.println("|\t   / _ \\| | | | | |  | |  | || | | \\___ \\  | |   | |_| | | | | |     / _ \\ | | | | | | | |_) |  _| \\___ \\ \t|");
+        System.out.println("|\t  / ___ \\ |_| | | |  | |  | || |_| |___) | | |___|  _  | |_| | |___ / ___ \\| |_| | |_| |  _ <| |___ ___) |\t|");
+        System.out.println("|\t /_/   \\_\\___/  |_| |___| |_| \\___/|____/   \\____|_| |_|\\___/ \\____/_/   \\_\\____/ \\___/|_| \\_\\_____|____/ \t|");
+        System.out.println("|_______________________________________________________________________________________________________________________|");
+        System.out.println("");
+
+        System.out.println("Seleccione una opcion para comenzar:");
+        System.out.println("a) Jugar");
+        System.out.println("b) Registrar un nuevo jugador");
+        System.out.println("c) Ver ranking");
+        System.out.println("_".repeat(40));
+        System.out.print("Ingrese la opcion: ");
+
+        String input = scanner.nextLine();
+        switch (input.charAt(0)) {
+            case 'a':
+                this.inicializarJuego();
+                break;
+            case 'b':
+                this.registrarJugador();
+                break;
+            case 'c':
+                this.mostrarRanking();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void inicializarJuego() {
+        Jugador j1;
+        Jugador j2;
+        if (this.getListaJugadores().isEmpty()) {
+            System.out.println("No hay jugadores registrados. A continuacion registre ambos jugadores.");
+            j1 = registrarJugador();
+            j2 = registrarJugador();
+        } else if (this.getListaJugadores().size() == 1) {
+            System.out.println("El unico jugador registrado es " + this.getListaJugadores().get(0) + ", por lo que sera asignado como jugador 1.");
+            j1 = this.getListaJugadores().get(0);
+            System.out.println("El jugador 2 sera registrado a continuacion.");
+            j2 = this.registrarJugador();
+        } else {
+            j1 = this.seleccionarJugador(1, null);
+            j2 = this.seleccionarJugador(2, j1);
+        }
+
+        Tablero tablero = seleccionarTablero();
+        System.out.println("El tablero elegido es: " + tablero);
+        Partida partida = new Partida(j1, j2, tablero);
+    }
+
+    public Jugador seleccionarJugador(int numJugador, Jugador jugadorSeleccionado) {
+        boolean seDefinioJugador = false;
+        Jugador jugadorElegido = new Jugador();
+
+        System.out.println("-- Seleccionado al jugador " + numJugador + " --");
+        System.out.println("Lista de jugadores: ");
+        for (int i = 0; i < this.getListaJugadores().size(); i++) {
+            System.out.println("\t" + (i + 1) + ") " + this.getListaJugadores().get(i));
+        }
+
+        while (!seDefinioJugador) {
+            try {
+                System.out.print("Numero de jugador a seleccionar: ");
+                int numElegido = scanner.nextInt();
+                scanner.nextLine();
+                jugadorElegido = this.getListaJugadores().get(numElegido - 1);
+                if (jugadorSeleccionado == null || !jugadorElegido.equals(jugadorSeleccionado)) {
+                    seDefinioJugador = true;
+                } else {
+                    System.out.print("Ese jugador ya fue seleccionado, ingrese otro: ");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Error: el numero ingresado no esta en la lista. Ingrese un numero entre 1 y " + (this.getListaJugadores().size() + 1) + ".");
+            } catch (InputMismatchException e) {
+                System.out.println("Error: formato de edad incorrecto. Ingrese un numero entero.");
+                scanner.nextLine();
+            }
+        }
+        System.out.println("Jugador seleccionado: " + jugadorElegido);
+        return jugadorElegido;
+    }
+
+    public Tablero seleccionarTablero() {
+        int opcion = -1;
+        System.out.println("Tipos de tableros:");
+        System.out.println("""
+                           \t 1) Al azar 
+                           \t 2) Configuracion manual
+                           \t 3) Predefinido""");
+        while (opcion != 1 && opcion != 2 && opcion != 3) {
+            System.out.print("Ingrese el tipo de tablero a utilizar: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+            if (opcion != 1 && opcion != 2 && opcion != 3) {
+                System.out.println("Error: el numero ingresado no forma parte de las opciones. Ingrese 1, 2 o 3.");
+            }
+        }
+
+        return new Tablero(opcion, determinarColores());
+    }
+
+    public ArrayList<Color> determinarColores() {
+        ArrayList<Color> colores = new ArrayList<>(6);
+        Random random = new Random();
+
+        for (int i = 0; i < 6; i++) {
+            int r = random.nextInt(256);
+            int g = random.nextInt(256);
+            int b = random.nextInt(256);
+            colores.add(new Color(r, g, b));
+        }
+
+        return colores;
     }
 }

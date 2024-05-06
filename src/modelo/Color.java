@@ -2,48 +2,36 @@ package modelo;
 
 public class Color {
 
-    private int r;
-    private int g;
-    private int b;
+    private String color;
 
-    public Color() {
-        this.setR(0);
-        this.setG(0);
-        this.setB(0);
+    public Color(int opcion) {
+        this.setColor(opcion);
     }
 
-    public Color(int r, int g, int b) {
-        this.setR(r);
-        this.setG(g);
-        this.setB(b);
+    public String[] getColoresPosibles() {
+        String[] colores = {
+            "\u001B[30m", //NEGRO
+            "\u001B[31m", //ROJO
+            "\u001B[32m", //VERDE
+            "\u001B[33m", //AMARILLO
+            "\u001B[34m", //AZUL
+            "\u001B[35m", //VIOLETA
+            "\u001B[36m", //CYAN
+            "\u001B[37m" //BLANCO
+        };
+        return colores;
     }
 
-    public int getR() {
-        return this.r;
+    public void setColor(int opcion) {
+        this.color = this.getColoresPosibles()[opcion];
     }
 
-    public void setR(int r) {
-        this.r = r;
-    }
-
-    public int getG() {
-        return this.g;
-    }
-
-    public void setG(int g) {
-        this.g = g;
-    }
-
-    public int getB() {
-        return this.b;
-    }
-
-    public void setB(int b) {
-        this.b = b;
+    public String getColor() {
+        return this.color;
     }
 
     @Override
     public String toString() {
-        return "Color: " + this.getR() + "(R), " + this.getG() + "(G), " + this.getB() + "(B).";
+        return this.getColor();
     }
 }

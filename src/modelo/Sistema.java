@@ -192,8 +192,10 @@ public class Sistema {
         }
 
         Tablero tablero = seleccionarTablero();
-        System.out.println("El tablero elegido es: " + tablero);
+        System.out.println("Tablero a jugar:");
+        tablero.mostrarTablero();
         Partida partida = new Partida(j1, j2, tablero);
+        this.setPartidaActual(partida);
     }
 
     public Jugador seleccionarJugador(int numJugador, Jugador jugadorSeleccionado) {
@@ -206,9 +208,9 @@ public class Sistema {
             System.out.println("\t" + (i + 1) + ") " + this.getListaJugadores().get(i));
         }
 
+        System.out.print("Numero de jugador a seleccionar: ");
         while (!seDefinioJugador) {
             try {
-                System.out.print("Numero de jugador a seleccionar: ");
                 int numElegido = scanner.nextInt();
                 scanner.nextLine();
                 jugadorElegido = this.getListaJugadores().get(numElegido - 1);
@@ -243,8 +245,8 @@ public class Sistema {
                 System.out.println("Error: el numero ingresado no forma parte de las opciones. Ingrese 1, 2 o 3.");
             }
         }
-
-        return new Tablero(opcion, determinarColores());
+        ArrayList<Color> colores = determinarColores();
+        return new Tablero(opcion, colores);
     }
 
     public ArrayList<Color> determinarColores() {
@@ -252,10 +254,7 @@ public class Sistema {
         Random random = new Random();
 
         for (int i = 0; i < 6; i++) {
-            int r = random.nextInt(256);
-            int g = random.nextInt(256);
-            int b = random.nextInt(256);
-            colores.add(new Color(r, g, b));
+            colores.add(new Color(random.nextInt(8)));
         }
 
         return colores;

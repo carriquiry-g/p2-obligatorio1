@@ -16,7 +16,6 @@ public class Sistema {
     public Sistema() {
         listaJugadores = new ArrayList<>();
         scanner = new Scanner(System.in);
-        this.agregarJugador(new Jugador("asfsa", 523, "pussy_destroyer"));
         this.agregarJugador(new Jugador("Juan", 25, "el_pro"));
         this.agregarJugador(new Jugador("Ana", 30, "mvp_queen"));
         this.agregarJugador(new Jugador("Pedro", 28, "fast_racer"));
@@ -193,7 +192,7 @@ public class Sistema {
 
         Tablero tablero = seleccionarTablero();
         System.out.println("Tablero a jugar:");
-        tablero.mostrarTablero();
+        tablero.renderizar();
         Partida partida = new Partida(j1, j2, tablero);
         this.setPartidaActual(partida);
     }

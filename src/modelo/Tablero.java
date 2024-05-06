@@ -155,6 +155,10 @@ public class Tablero {
             }
 
             esTableroValido = esValido(tableroAux);
+            
+            if (!esTableroValido) {
+                tableroAux = new Autito[dim][dim];
+            }
         }
 
         return tableroAux;
@@ -193,8 +197,6 @@ public class Tablero {
         //2) preguntar cantidad de autos
         //3) preguntar posiciones de todos los autos
         //4) crear tablero
-        Random random = new Random();
-
         int dim = 0;
         while (dim != 5 && dim != 6 && dim != 7) {
             System.out.print("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");
@@ -237,34 +239,48 @@ public class Tablero {
             for (int i = 0; i < n; i++) {
                 int fila = 0, columna = 0, direccion = 0;
 
-                do {
-                    this.renderizar();
-                    System.out.println("Ingrese las coordenadas y direccion del auto " + (i + 1) + " en el formato 'A10', donde 'A' es la fila, '1' es la columna y '0' es la direccion.");
-                    System.out.println("Direcciones: 0=Arriba, 1=Derecha, 2=Abajo, 3=Izquierda");
-                    System.out.print("Ingrese el auto " + (i + 1) + ": ");
-                    String coordenadas = scanner.nextLine().toUpperCase();
-                    if (coordenadas.length() <= 3) {
-                        fila = coordenadas.charAt(0) - 'A';
-                        columna = Character.getNumericValue(coordenadas.charAt(1)) - 1;
-                        direccion = Character.getNumericValue(coordenadas.charAt(2));
-                    } else {
-                        System.out.println("Formato de coordenadas invalido.");
-                    }
-                    
-                    if(tableroAux[fila][columna] != null && coordenadas.length() <= 3){
-                        System.out.println("Ya hay un autito en esas coordenadas. Ingrese coordenadas distintas.");
-                    }
-                } while (tableroAux[fila][columna] != null);
+                try {
+                    do {
+                        this.renderizar();
+                        System.out.println("Ingrese las coordenadas y direccion del auto " + (i + 1) + " en el formato 'A10', donde 'A' es la fila, '1' es la columna y '0' es la direccion.");
+                        System.out.println("Direcciones: 0=Arriba, 1=Derecha, 2=Abajo, 3=Izquierda");
+                        System.out.print("Ingrese el auto " + (i + 1) + ": ");
+                        String coordenadas = scanner.nextLine().toUpperCase();
+                        if (coordenadas.length() <= 3) {
+                            fila = coordenadas.charAt(0) - 'A';
+                            columna = Character.getNumericValue(coordenadas.charAt(1)) - 1;
+                            direccion = Character.getNumericValue(coordenadas.charAt(2));
+                        } else {
+                            System.out.println("Error: formato de coordenadas invalido.");
+                        }
 
-                Autito nuevoAuto = new Autito(direccion, this.obtenerColorAleatorio(), fila, columna);
-                this.agregarAuto(nuevoAuto);
-                tableroAux[fila][columna] = nuevoAuto;
+                        if (direccion > 3) {
+                            throw new Exception("Error: la direccion indicada no es correcta. Ingrese un valor entero entre 0 y 3.");
+                        }
+
+                        if (tableroAux[fila][columna] != null && coordenadas.length() <= 3) {
+                            System.out.println("Ya hay un autito en esas coordenadas. Ingrese coordenadas distintas.");
+                        }
+                    } while (tableroAux[fila][columna] != null);
+
+                    Autito nuevoAuto = new Autito(direccion, this.obtenerColorAleatorio(), fila, columna);
+                    this.agregarAuto(nuevoAuto);
+                    tableroAux[fila][columna] = nuevoAuto;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Error: las coordenadas no son validas. Corrobore que la fila y/o columna indicada este dentro del rango valido.");
+                    i--;
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    i--;
+                }
             }
 
             esTableroValido = esValido(tableroAux);
 
             if (!esTableroValido) {
                 System.out.println("El tablero ingresado no es valido. No hay jugadas posibles. Ingrese nuevamente las coordenadas de los autitos.");
+                tableroAux = new Autito[dim][dim];
+                this.setTablero(tableroAux);
             }
         }
 
@@ -272,9 +288,35 @@ public class Tablero {
     }
 
     public boolean esValido(Autito[][] tablero) {
-        //TODO: implementar logica para detectar si es valido
-        //chequear que para al menos 1 auto, haya un movimiento posible
-        return true;
+        boolean esTableroValido = false;
+        int n = tablero.length;
+
+        // Cada elemento en direcciones representa los movimientos direccionados sobre los ejes para representar los movimientos en el tablero
+        int[][] direcciones = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Autito auto = tablero[i][j];
+                if (auto != null) {
+                    for (int rotacion = 1; rotacion <= 3; rotacion++) {
+                        int nuevaDireccion = (auto.getDireccion() + rotacion) % 4;
+                        int[] movimiento = direcciones[nuevaDireccion];
+
+                        // Avanzar hasta encontrar un auto o chocar con un borde del tablero
+                        int fila = i + movimiento[0];
+                        int columna = j + movimiento[1];
+                        while (fila >= 0 && fila < n && columna >= 0 && columna < n && !esTableroValido) {
+                            if (tablero[fila][columna] != null) {
+                                esTableroValido = true;
+                            }
+                            fila += movimiento[0];
+                            columna += movimiento[1];
+                        }
+                    }
+                }
+            }
+        }
+        return esTableroValido;
     }
 
     public void rotar() {

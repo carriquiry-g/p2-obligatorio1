@@ -162,10 +162,6 @@ public class Tablero {
         }
 
         return tableroAux;
-
-        // generar autos con sus posiciones, direccion y color
-        // verificar si el tablero es válido
-        // si no es válido, repetir hasta que sea
     }
 
     public Autito[][] crearTableroPredefinido() {
@@ -192,11 +188,6 @@ public class Tablero {
     }
 
     public Autito[][] crearTableroConfigurado() {
-        //TODO: logica para generar tablero configurado
-        //1) preguntar dimension
-        //2) preguntar cantidad de autos
-        //3) preguntar posiciones de todos los autos
-        //4) crear tablero
         int dim = 0;
         while (dim != 5 && dim != 6 && dim != 7) {
             System.out.print("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");

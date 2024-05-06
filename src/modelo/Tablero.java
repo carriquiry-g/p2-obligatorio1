@@ -51,12 +51,12 @@ public class Tablero {
     }
 
     public void renderizar() {
-        int dimension = this.getDimension();
-        Autito[][] tablero = this.getTablero();
+        int dim = this.getDimension();
+        Autito[][] tab = this.getTablero();
 
         // Imprimir la primera fila con números
         System.out.print("    ");
-        for (int j = 1; j <= dimension; j++) {
+        for (int j = 1; j <= dim; j++) {
             if (j == 1) {
                 System.out.print(j + "  ");
             } else {
@@ -67,12 +67,12 @@ public class Tablero {
 
         // Imprimir líneas superiores
         System.out.print("  +");
-        for (int j = 0; j < dimension; j++) {
+        for (int j = 0; j < dim; j++) {
             System.out.print("----+");
         }
         System.out.println();
 
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < dim; i++) {
             // Imprimir las líneas de la celda
             for (int l = 0; l < 4; l++) {
                 if (l == 1) {
@@ -83,12 +83,12 @@ public class Tablero {
                 }
 
                 System.out.print("|");
-                for (int j = 0; j < dimension; j++) {
+                for (int j = 0; j < dim; j++) {
                     String[] representacion;
-                    if (tablero[i][j] == null) {
+                    if (tab[i][j] == null) {
                         representacion = new String[]{"    ", "    ", "    ", "    "};
                     } else {
-                        representacion = tablero[i][j].renderizar();
+                        representacion = tab[i][j].renderizar();
                     }
                     System.out.print(representacion[l] + "|");
                 }
@@ -97,7 +97,7 @@ public class Tablero {
 
             // Imprimir líneas inferiores
             System.out.print("  +");
-            for (int j = 0; j < dimension; j++) {
+            for (int j = 0; j < dim; j++) {
                 System.out.print("----+");
             }
             System.out.println();
@@ -155,7 +155,7 @@ public class Tablero {
             }
 
             esTableroValido = esValido(tableroAux);
-            
+
             if (!esTableroValido) {
                 tableroAux = new Autito[dim][dim];
             }
@@ -278,36 +278,53 @@ public class Tablero {
         return tableroAux;
     }
 
-    public boolean esValido(Autito[][] tablero) {
-        boolean esTableroValido = false;
+    public boolean autoTieneMovimientoPosible(Autito[][] tablero, int i, int j, int[][] direcciones) {
+        boolean esValidoTablero = false;
         int n = tablero.length;
+        Autito auto = tablero[i][j];
 
-        // Cada elemento en direcciones representa los movimientos direccionados sobre los ejes para representar los movimientos en el tablero
+        for (int rotacion = 1; rotacion <= 3; rotacion++) {
+            int nuevaDireccion = (auto.getDireccion() + rotacion) % 4;
+            int[] movimiento = direcciones[nuevaDireccion];
+
+            int fila = i + movimiento[0];
+            int columna = j + movimiento[1];
+            while (fila >= 0 && fila < n && columna >= 0 && columna < n) {
+                if (!esValidoTablero && tablero[fila][columna] != null) {
+                    esValidoTablero = true;
+                }
+                fila += movimiento[0];
+                columna += movimiento[1];
+            }
+        }
+        return esValidoTablero;
+    }
+
+    public boolean esValido(Autito[][] tablero) {
+        boolean esValidoTablero = false;
         int[][] direcciones = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                Autito auto = tablero[i][j];
-                if (auto != null) {
-                    for (int rotacion = 1; rotacion <= 3; rotacion++) {
-                        int nuevaDireccion = (auto.getDireccion() + rotacion) % 4;
-                        int[] movimiento = direcciones[nuevaDireccion];
-
-                        // Avanzar hasta encontrar un auto o chocar con un borde del tablero
-                        int fila = i + movimiento[0];
-                        int columna = j + movimiento[1];
-                        while (fila >= 0 && fila < n && columna >= 0 && columna < n && !esTableroValido) {
-                            if (tablero[fila][columna] != null) {
-                                esTableroValido = true;
-                            }
-                            fila += movimiento[0];
-                            columna += movimiento[1];
-                        }
-                    }
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[i].length; j++) {
+                if (!esValidoTablero && tablero[i][j] != null && autoTieneMovimientoPosible(tablero, i, j, direcciones)) {
+                    esValidoTablero = true; // Se encontró al menos un auto con movimiento posible
                 }
             }
         }
-        return esTableroValido;
+        return esValidoTablero;
+    }
+
+    public ArrayList<String> obtenerPosiblesMovimientos(Autito[][] tablero) {
+        ArrayList<String> posiblesMovimientos = new ArrayList<>();
+        int[][] direcciones = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[i].length; j++) {
+                if (tablero[i][j] != null && autoTieneMovimientoPosible(tablero, i, j, direcciones)) {
+                    Autito auto = tablero[i][j];
+                    posiblesMovimientos.add(auto.toString());
+                }
+            }
+        }
+        return posiblesMovimientos;
     }
 
     public void rotar() {

@@ -219,7 +219,7 @@ public class Sistema {
                     System.out.print("Ese jugador ya fue seleccionado, ingrese otro: ");
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("Error: el numero ingresado no esta en la lista. Ingrese un numero entre 1 y " + (this.getListaJugadores().size() + 1) + ".");
+                System.out.println("Error: el numero ingresado no esta en la lista. Ingrese un numero entre 1 y " + (this.getListaJugadores().size()) + ".");
             } catch (InputMismatchException e) {
                 System.out.println("Error: formato de edad incorrecto. Ingrese un numero entero.");
                 scanner.nextLine();

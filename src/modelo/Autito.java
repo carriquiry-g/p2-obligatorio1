@@ -10,12 +10,6 @@ public class Autito {
     private int fila;
     private int columna;
 
-    public Autito(Color color) {
-        Random random = new Random();
-        this.setDireccion(random.nextInt((3 - 0) + 1));
-        this.setColor(color);
-    }
-
     public Autito(int direccion, Color color, int fila, int columna) {
         this.setDireccion(direccion);
         this.setColor(color);
@@ -103,8 +97,8 @@ public class Autito {
             case 3: // Izquierda
                 configuracion = new String[]{
                     "    ",
-                    RED_TEXT_YELLOW_BG + "o"+ RESET + colorANSI + "***" + RESET,
-                    RED_TEXT_YELLOW_BG + "o"+ RESET + colorANSI + "***" + RESET,
+                    RED_TEXT_YELLOW_BG + "o" + RESET + colorANSI + "***" + RESET,
+                    RED_TEXT_YELLOW_BG + "o" + RESET + colorANSI + "***" + RESET,
                     "    "
                 };
                 break;
@@ -112,5 +106,10 @@ public class Autito {
                 configuracion = new String[]{"    ", "    ", "    ", "    "};
         }
         return configuracion;
+    }
+
+    @Override
+    public String toString() {
+        return "" + this.getLetraFila() + (this.getColumna() + 1) + this.getDireccion();
     }
 }

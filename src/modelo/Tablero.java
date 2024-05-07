@@ -284,7 +284,7 @@ public class Tablero {
         Autito auto = tablero[i][j];
 
         for (int rotacion = 1; rotacion <= 3; rotacion++) {
-            int nuevaDireccion = (auto.getDireccion() + rotacion) % 4;
+            int nuevaDireccion = auto.rotar(rotacion);
             int[] movimiento = direcciones[nuevaDireccion];
 
             int fila = i + movimiento[0];
@@ -306,7 +306,7 @@ public class Tablero {
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[i].length; j++) {
                 if (!esValidoTablero && tablero[i][j] != null && autoTieneMovimientoPosible(tablero, i, j, direcciones)) {
-                    esValidoTablero = true; // Se encontró al menos un auto con movimiento posible
+                    esValidoTablero = true;
                 }
             }
         }
@@ -329,10 +329,6 @@ public class Tablero {
 
     public void rotar() {
         //TODO: rotar tablero
-    }
-
-    public void obtenerPosiblesMovimientos() {
-        //TODO: devolver posibles movimientos
     }
 
     public int getDimension() {

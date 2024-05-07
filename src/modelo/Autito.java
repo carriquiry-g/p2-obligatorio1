@@ -17,8 +17,8 @@ public class Autito {
         this.setColumna(columna);
     }
 
-    public void rotar() {
-        //TODO: mecanica de rotar
+    public int rotar(int rotacion) {
+        return (this.getDireccion() + rotacion) % 4;
     }
 
     public void chocar() {

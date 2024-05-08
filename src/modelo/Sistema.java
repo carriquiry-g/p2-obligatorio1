@@ -55,6 +55,8 @@ public class Sistema {
     }
 
     public void mostrarRanking() {
+        //TODO: rehacer este sort usando Collections.sort y implements Comparable y compareTo en Jugador
+        //ver en clase 19
         this.getListaJugadores().sort(Comparator
                 .comparingInt(Jugador::getPuntaje).reversed()
                 .thenComparing(Jugador::getAlias));

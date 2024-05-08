@@ -1,8 +1,5 @@
 package modelo;
 
-import java.util.Arrays;
-import java.util.Random;
-
 public class Autito {
 
     private int direccion;
@@ -21,8 +18,10 @@ public class Autito {
         return (this.getDireccion() + rotacion) % 4;
     }
 
-    public void chocar() {
+    public void chocar(int fila, int columna) {
         //TODO: mecanica de chocar
+        this.setFila(fila);
+        this.setColumna(columna);
     }
 
     public int getDireccion() {

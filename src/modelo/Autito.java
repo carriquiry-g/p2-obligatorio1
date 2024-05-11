@@ -62,53 +62,6 @@ public class Autito {
         this.columna = columna;
     }
 
-    public String[] renderizar() {
-        String[] configuracion;
-        // ANSI escape codes for colors
-        final String RESET = "\u001B[0m";
-        final String RED_TEXT_YELLOW_BG = "\u001B[31;43m"; // Red text on yellow background
-
-        String colorANSI = this.getColor().toString();
-
-        switch (this.getDireccion()) {
-            case 0: // Arriba
-                configuracion = new String[]{
-                    " " + RED_TEXT_YELLOW_BG + "oo" + RESET + " ",
-                    colorANSI + " ** " + RESET,
-                    colorANSI + " ** " + RESET,
-                    colorANSI + " ** " + RESET
-                };
-                break;
-            case 1: // Derecha
-                configuracion = new String[]{
-                    "    ",
-                    colorANSI + "***" + RED_TEXT_YELLOW_BG + "o" + RESET,
-                    colorANSI + "***" + RED_TEXT_YELLOW_BG + "o" + RESET,
-                    "    "
-                };
-                break;
-            case 2: // Abajo
-                configuracion = new String[]{
-                    colorANSI + " ** " + RESET,
-                    colorANSI + " ** " + RESET,
-                    colorANSI + " ** " + RESET,
-                    " " + RED_TEXT_YELLOW_BG + "oo" + RESET + " "
-                };
-                break;
-            case 3: // Izquierda
-                configuracion = new String[]{
-                    "    ",
-                    RED_TEXT_YELLOW_BG + "o" + RESET + colorANSI + "***" + RESET,
-                    RED_TEXT_YELLOW_BG + "o" + RESET + colorANSI + "***" + RESET,
-                    "    "
-                };
-                break;
-            default:
-                configuracion = new String[]{"    ", "    ", "    ", "    "};
-        }
-        return configuracion;
-    }
-
     @Override
     public String toString() {
         return "" + this.getLetraFila() + (this.getColumna() + 1) + this.getDireccion();

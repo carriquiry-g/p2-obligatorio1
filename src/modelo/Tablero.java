@@ -4,39 +4,40 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Scanner;
+import obligatorio1.Consola;
 
 public class Tablero {
 
-    private Scanner scanner;
-    private Autito[][] tablero;
+    private Autito[][] configuracion;
     private int dimension;
     private ArrayList<Autito> listaAutos = new ArrayList<>();
     private ArrayList<Color> listaColores = new ArrayList<>();
 
     public Tablero(int tipoTablero, ArrayList<Color> colores) {
         this.setListaColores(colores);
-        scanner = new Scanner(System.in);
 
         switch (tipoTablero) {
             case 1:
                 //Al azar
-                this.setTablero(this.crearTableroAlAzar());
+                this.setConfiguracion(this.crearTableroAlAzar());
                 break;
             case 2:
                 //Configurado por el usuario
-                this.setTablero(this.crearTableroConfigurado());
+                this.setConfiguracion(this.crearTableroConfigurado());
                 break;
             case 3:
                 //Predefinido
-                this.setTablero(this.crearTableroPredefinido());
+                this.setConfiguracion(this.crearTableroPredefinido());
                 break;
             default:
+                this.setConfiguracion(this.crearTableroPredefinido());
                 break;
         }
+        
+        Consola.throwImportante("Tablero a jugar: ");
+        Consola.renderizarTablero(this);
     }
 
     public void agregarAuto(Autito auto) {
@@ -53,95 +54,24 @@ public class Tablero {
         }
     }
 
-    public void renderizar() {
-        int dim = this.getDimension();
-        Autito[][] tab = this.getTablero();
-
-        // Imprimir la primera fila con números
-        System.out.print("    ");
-        for (int j = 1; j <= dim; j++) {
-            if (j == 1) {
-                System.out.print(j + "  ");
-            } else {
-                System.out.print("  " + j + "  ");
-            }
-        }
-        System.out.println();
-
-        // Imprimir líneas superiores
-        System.out.print("  +");
-        for (int j = 0; j < dim; j++) {
-            System.out.print("----+");
-        }
-        System.out.println();
-
-        for (int i = 0; i < dim; i++) {
-            // Imprimir las líneas de la celda
-            for (int l = 0; l < 4; l++) {
-                if (l == 1) {
-                    // Imprimir la letra correspondiente a la fila en la segunda línea
-                    System.out.print((char) ('A' + i) + " ");
-                } else {
-                    System.out.print("  ");
-                }
-
-                System.out.print("|");
-                for (int j = 0; j < dim; j++) {
-                    String[] representacion;
-                    if (tab[i][j] == null) {
-                        representacion = new String[]{"    ", "    ", "    ", "    "};
-                    } else {
-                        representacion = tab[i][j].renderizar();
-                    }
-                    System.out.print(representacion[l] + "|");
-                }
-                System.out.println();
-            }
-
-            // Imprimir líneas inferiores
-            System.out.print("  +");
-            for (int j = 0; j < dim; j++) {
-                System.out.print("----+");
-            }
-            System.out.println();
-        }
-    }
-
     public Autito[][] getTablero() {
-        return this.tablero;
+        return this.configuracion;
     }
 
-    public void setTablero(Autito[][] tablero) {
-        this.tablero = tablero;
+    public void setConfiguracion(Autito[][] configuracion) {
+        this.configuracion = configuracion;
     }
 
     public Autito[][] crearTableroAlAzar() {
         Random random = new Random();
 
-        System.out.print("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");
-        int dim = scanner.nextInt();
-        scanner.nextLine();
+        int dim = this.obtenerDimension();
+        int n = obtenerCantidadAutos();
         this.setDimension(dim);
-        Autito[][] tableroAux = new Autito[dim][dim];
-
-        int n = 0;
-        while (n < 3 || n > 12) {
-            System.out.print("Ingrese la cantidad de autos deseados para el tablero (entre 3 y 12): ");
-            try {
-                n = scanner.nextInt();
-                scanner.nextLine();
-
-                if (n < 3 || n > 12) {
-                    System.out.println("Error: la cantidad de autos debe estar entre 3 y 12.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Error: la cantidad de autos debe ser un numero entero entre 3 y 12.");
-                scanner.nextLine();
-            }
-        }
+        
+        Autito[][] aux = new Autito[dim][dim];
 
         boolean esTableroValido = false;
-
         while (!esTableroValido) {
             for (int i = 0; i < n; i++) {
                 int fila, columna;
@@ -149,27 +79,27 @@ public class Tablero {
                 do {
                     fila = random.nextInt(dim);
                     columna = random.nextInt(dim);
-                } while (tableroAux[fila][columna] != null);
+                } while (aux[fila][columna] != null);
 
                 int direccion = random.nextInt((3 - 0) + 1);
                 Autito nuevoAuto = new Autito(direccion, this.obtenerColorAleatorio(), fila, columna);
                 this.agregarAuto(nuevoAuto);
-                tableroAux[fila][columna] = nuevoAuto;
+                aux[fila][columna] = nuevoAuto;
             }
 
-            esTableroValido = esValido(tableroAux);
+            esTableroValido = esValido(aux);
 
             if (!esTableroValido) {
-                tableroAux = new Autito[dim][dim];
+                aux = new Autito[dim][dim];
             }
         }
 
-        return tableroAux;
+        return aux;
     }
 
     public Autito[][] crearTableroPredefinido() {
         int dim = 5;
-        Autito[][] tableroAux = new Autito[dim][dim];
+        Autito[][] aux = new Autito[dim][dim];
         this.setDimension(dim);
 
         Autito[] autos = {
@@ -184,103 +114,100 @@ public class Tablero {
         };
         for (int i = 0; i < autos.length; i++) {
             this.agregarAuto(autos[i]);
-            tableroAux[autos[i].getFila()][autos[i].getColumna()] = autos[i];
+            aux[autos[i].getFila()][autos[i].getColumna()] = autos[i];
         }
 
-        return tableroAux;
+        return aux;
     }
 
     public Autito[][] crearTableroConfigurado() {
-        int dim = 0;
-        while (dim != 5 && dim != 6 && dim != 7) {
-            System.out.print("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");
-            try {
-                dim = scanner.nextInt();
-                scanner.nextLine();
-
-                if (dim != 5 && dim != 6 && dim != 7) {
-                    System.out.println("Error: la dimension del tablero debe ser 5, 6 o 7.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Error: la dimension del tablero debe ser un numero entero (5, 6 o 7).");
-                scanner.nextLine();
-            }
-        }
-
+        int dim = this.obtenerDimension();
         this.setDimension(dim);
-        Autito[][] tableroAux = new Autito[dim][dim];
-
-        int n = 0;
-        while (n < 3 || n > 12) {
-            System.out.print("Ingrese la cantidad de autos deseados para el tablero (entre 3 y 12): ");
-            try {
-                n = scanner.nextInt();
-                scanner.nextLine();
-
-                if (n < 3 || n > 12) {
-                    System.out.println("Error: la cantidad de autos debe estar entre 3 y 12.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Error: la cantidad de autos debe ser un numero entero entre 3 y 12.");
-                scanner.nextLine();
-            }
-        }
+        int n = obtenerCantidadAutos();
+        
+        Autito[][] aux = new Autito[dim][dim];
+        this.setConfiguracion(aux);
 
         boolean esTableroValido = false;
-        this.setTablero(tableroAux);
-
         while (!esTableroValido) {
             for (int i = 0; i < n; i++) {
                 int fila = 0, columna = 0, direccion = 0;
 
                 try {
                     do {
-                        this.renderizar();
-                        System.out.println("Ingrese las coordenadas y direccion del auto " + (i + 1) + " en el formato 'A10', donde 'A' es la fila, '1' es la columna y '0' es la direccion.");
-                        System.out.println("Direcciones: 0=Arriba, 1=Derecha, 2=Abajo, 3=Izquierda");
-                        System.out.print("Ingrese el auto " + (i + 1) + ": ");
-                        String coordenadas = scanner.nextLine().toUpperCase();
+                        Consola.renderizarTablero(this);
+                        Consola.throwImportante("Ingrese las coordenadas y direccion del auto " + (i + 1) + " en el formato 'A10', donde 'A' es la fila, '1' es la columna y '0' es la direccion.");
+                        Consola.throwImportante("Direcciones: 0=Arriba, 1=Derecha, 2=Abajo, 3=Izquierda");
+                        
+                        
+                        String coordenadas = Consola.pedirDatoString("Ingrese el auto " + (i + 1) + ": ").toUpperCase();
                         if (coordenadas.length() <= 3) {
                             fila = coordenadas.charAt(0) - 'A';
                             columna = Character.getNumericValue(coordenadas.charAt(1)) - 1;
                             direccion = Character.getNumericValue(coordenadas.charAt(2));
                         } else {
-                            System.out.println("Error: formato de coordenadas invalido.");
+                            Consola.throwError("Error: formato de coordenadas invalido.");
                         }
 
                         if (direccion > 3) {
                             throw new Exception("Error: la direccion indicada no es correcta. Ingrese un valor entero entre 0 y 3.");
                         }
 
-                        if (tableroAux[fila][columna] != null && coordenadas.length() <= 3) {
-                            System.out.println("Ya hay un autito en esas coordenadas. Ingrese coordenadas distintas.");
+                        if (aux[fila][columna] != null && coordenadas.length() <= 3) {
+                            Consola.throwError("Ya hay un autito en esas coordenadas. Ingrese coordenadas distintas.");
                         }
-                    } while (tableroAux[fila][columna] != null);
+                    } while (aux[fila][columna] != null);
 
                     Autito nuevoAuto = new Autito(direccion, this.obtenerColorAleatorio(), fila, columna);
                     this.agregarAuto(nuevoAuto);
-                    tableroAux[fila][columna] = nuevoAuto;
+                    aux[fila][columna] = nuevoAuto;
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Error: las coordenadas no son validas. Corrobore que la fila y/o columna indicada este dentro del rango valido.");
+                    Consola.throwError("Error: las coordenadas no son validas. Corrobore que la fila y/o columna indicada este dentro del rango valido.");
                     i--;
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    Consola.throwError(e.getMessage());
                     i--;
                 }
             }
 
-            esTableroValido = esValido(tableroAux);
+            esTableroValido = esValido(aux);
 
             if (!esTableroValido) {
-                System.out.println("El tablero ingresado no es valido. No hay jugadas posibles. Ingrese nuevamente las coordenadas de los autitos.");
-                tableroAux = new Autito[dim][dim];
-                this.setTablero(tableroAux);
+                Consola.throwError("El tablero ingresado no es valido. No hay jugadas posibles. Ingrese nuevamente las coordenadas de los autitos.");
+                aux = new Autito[dim][dim];
+                this.setConfiguracion(aux);
             }
         }
 
-        return tableroAux;
+        return aux;
     }
 
+    public int obtenerDimension(){
+        int dim = -1;
+        while (dim != 5 && dim != 6 && dim != 7) {
+            dim = Consola.pedirDatoNumerico("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");
+
+            if (dim != 5 && dim != 6 && dim != 7) {
+                Consola.throwError("Error: la dimension del tablero debe ser 5, 6 o 7.");
+            }
+        }
+        
+        return dim;
+    }
+    
+    public int obtenerCantidadAutos(){
+        int n = 0;
+        while (n < 3 || n > 12) {
+            n = Consola.pedirDatoNumerico("Ingrese la cantidad de autos deseados para el tablero (entre 3 y 12): ");
+
+            if (n < 3 || n > 12) {
+                Consola.throwError("Error: la cantidad de autos debe ser entre 3 y 12.");
+            }
+        }
+        
+        return n;
+    }
+    
     public boolean autoTieneMovimientoPosible(Autito[][] tablero, int i, int j, int[][] direcciones) {
         boolean esValidoTablero = false;
         int n = tablero.length;

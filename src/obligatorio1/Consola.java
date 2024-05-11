@@ -1,3 +1,6 @@
+//Darian Saldaña 230846
+//Gaston Carriquiry 230498
+
 package obligatorio1;
 
 import java.util.Comparator;

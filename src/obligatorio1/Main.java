@@ -1,14 +1,40 @@
 package obligatorio1;
 
-import java.util.Scanner;
 import modelo.Sistema;
 
 public class Main {
 
     public static void main(String[] args) {
         Sistema sistema = new Sistema();
-        Scanner scanner = new Scanner(System.in);
+        inicializarJuego(sistema);
 
-        sistema.mostrarMenu();
+    }
+
+    public static void inicializarJuego(Sistema sistema) {
+        char opcionElegida = '0';
+
+        while (opcionElegida != 'a' && opcionElegida != 'b' && opcionElegida != 'c' && opcionElegida != 'd') {
+            opcionElegida = Consola.mostrarMenuPrincipal();
+        }
+
+        switch (opcionElegida) {
+            case 'a':
+                sistema.inicializarPartida();
+                break;
+            case 'b':
+                sistema.registrarJugador();
+                inicializarJuego(sistema);
+                break;
+            case 'c':
+                Consola.mostrarRanking(sistema.getListaJugadores());
+                inicializarJuego(sistema);
+                break;
+            case 'd':
+                Consola.throwImportante("Juego finalizado");
+                break;
+            default:
+                inicializarJuego(sistema);
+                break;
+        }
     }
 }

@@ -19,10 +19,10 @@ public class Main {
         while (opcionElegida != 'a' && opcionElegida != 'b' && opcionElegida != 'c' && opcionElegida != 'd') {
             opcionElegida = Consola.mostrarMenuPrincipal();
         }
-
         switch (opcionElegida) {
             case 'a':
                 sistema.inicializarPartida();
+                inicializarJuego(sistema);
                 break;
             case 'b':
                 sistema.registrarJugador();

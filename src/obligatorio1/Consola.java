@@ -223,4 +223,25 @@ public class Consola {
             }
         }
     }
+
+    public static void informarResultadoPartida(Jugador ganador, Jugador perdedor, boolean huboAbandono) {
+        throwInfo(" _______________________________________________________________________________________");
+        throwInfo("|\t  _____ ___ _   _   ____  _____   ____   _    ____ _____ ___ ____    _    \t|");
+        throwInfo("|\t |  ___|_ _| \\ | | |  _ \\| ____| |  _ \\ / \\  |  _ \\_   _|_ _|  _ \\  / \\   \t|");
+        throwInfo("|\t | |_   | ||  \\| | | | | |  _|   | |_) / _ \\ | |_) || |  | || | | |/ _ \\  \t|");
+        throwInfo("|\t |  _|  | || |\\  | | |_| | |___  |  __/ ___ \\|  _ < | |  | || |_| / ___ \\ \t|");
+        throwInfo("|\t |_|   |___|_| \\_| |____/|_____| |_| /_/   \\_\\_| \\_\\|_| |___|____/_/   \\_\\\t|");
+        throwInfo("|_______________________________________________________________________________________|");
+
+        throwInfo("");
+        throwInfo("Ganador: " + ganador + " - Puntaje total: " + ganador.getPuntaje());
+        System.out.print("Perdedor: " + perdedor + " - Puntaje total: " + perdedor.getPuntaje());
+        if(huboAbandono){
+        System.out.print(" (Abandono)");
+        }
+        throwInfo("");
+        throwInfo("");
+
+        pedirDatoString("Presione Enter para volver al menu principal.");
+    }
 }

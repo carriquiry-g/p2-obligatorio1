@@ -122,6 +122,8 @@ public class Partida {
 
         perdedor.modificarPuntaje(puntajePerdedor);
         perdedor.sumarPartidaJugada();
+        
+        Consola.informarResultadoPartida(ganador, perdedor, huboAbandono);
     }
 
     public boolean procesarJugada(String input) {

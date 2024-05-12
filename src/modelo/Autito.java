@@ -1,7 +1,8 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package modelo;
+
+import java.util.Arrays;
 
 public class Autito {
 
@@ -22,7 +23,18 @@ public class Autito {
     }
 
     public void chocar(int fila, int columna) {
-        //TODO: mecanica de chocar
+        int diferenciaFila = fila - this.getFila();
+        int diferenciaColumna = columna - this.getColumna();
+
+        if (diferenciaFila < 0 && diferenciaColumna == 0) {
+            this.setDireccion(0);
+        } else if (diferenciaFila == 0 && diferenciaColumna > 0) {
+            this.setDireccion(1);
+        } else if (diferenciaFila > 0 && diferenciaColumna == 0) {
+            this.setDireccion(2);
+        } else if (diferenciaFila == 0 && diferenciaColumna < 0) {
+            this.setDireccion(3);
+        }
         this.setFila(fila);
         this.setColumna(columna);
     }
@@ -65,6 +77,6 @@ public class Autito {
 
     @Override
     public String toString() {
-        return "" + this.getLetraFila() + (this.getColumna() + 1) + this.getDireccion();
+        return "" + this.getLetraFila() + (this.getColumna() + 1);
     }
 }

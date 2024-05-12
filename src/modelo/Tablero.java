@@ -1,6 +1,5 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package modelo;
 
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ public class Tablero {
     private int dimension;
     private ArrayList<Autito> listaAutos = new ArrayList<>();
     private ArrayList<Color> listaColores = new ArrayList<>();
+    private static int[][] Direcciones = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
     public Tablero(int tipoTablero, ArrayList<Color> colores) {
         this.setListaColores(colores);
@@ -35,7 +35,7 @@ public class Tablero {
                 this.setConfiguracion(this.crearTableroPredefinido());
                 break;
         }
-        
+
         Consola.throwImportante("Tablero a jugar: ");
         Consola.renderizarTablero(this);
     }
@@ -44,17 +44,20 @@ public class Tablero {
         this.listaAutos.add(auto);
     }
 
-    public void eliminarAuto(Autito autoEliminar) {
-        Iterator<Autito> iterator = this.getListaAutos().iterator();
+    public void eliminarAutoChocado(Autito autoEliminar) {
+        this.getListaAutos().removeIf(auto -> auto.toString().equalsIgnoreCase(autoEliminar.toString()));
+
+        //* El codigo comentado da error ConcurrentModificationException.
+        /*Iterator<Autito> iterator = this.getListaAutos().iterator();
         while (iterator.hasNext()) {
             Autito auto = iterator.next();
             if (auto.toString().equalsIgnoreCase(autoEliminar.toString())) {
                 this.getListaAutos().remove(autoEliminar);
             }
-        }
+        }*/
     }
 
-    public Autito[][] getTablero() {
+    public Autito[][] getConfiguracion() {
         return this.configuracion;
     }
 
@@ -68,7 +71,7 @@ public class Tablero {
         int dim = this.obtenerDimension();
         int n = obtenerCantidadAutos();
         this.setDimension(dim);
-        
+
         Autito[][] aux = new Autito[dim][dim];
 
         boolean esTableroValido = false;
@@ -87,7 +90,7 @@ public class Tablero {
                 aux[fila][columna] = nuevoAuto;
             }
 
-            esTableroValido = esValido(aux);
+            esTableroValido = validarConfiguracion(aux);
 
             if (!esTableroValido) {
                 aux = new Autito[dim][dim];
@@ -124,7 +127,7 @@ public class Tablero {
         int dim = this.obtenerDimension();
         this.setDimension(dim);
         int n = obtenerCantidadAutos();
-        
+
         Autito[][] aux = new Autito[dim][dim];
         this.setConfiguracion(aux);
 
@@ -138,8 +141,7 @@ public class Tablero {
                         Consola.renderizarTablero(this);
                         Consola.throwImportante("Ingrese las coordenadas y direccion del auto " + (i + 1) + " en el formato 'A10', donde 'A' es la fila, '1' es la columna y '0' es la direccion.");
                         Consola.throwImportante("Direcciones: 0=Arriba, 1=Derecha, 2=Abajo, 3=Izquierda");
-                        
-                        
+
                         String coordenadas = Consola.pedirDatoString("Ingrese el auto " + (i + 1) + ": ").toUpperCase();
                         if (coordenadas.length() <= 3) {
                             fila = coordenadas.charAt(0) - 'A';
@@ -170,7 +172,7 @@ public class Tablero {
                 }
             }
 
-            esTableroValido = esValido(aux);
+            esTableroValido = validarConfiguracion(aux);
 
             if (!esTableroValido) {
                 Consola.throwError("El tablero ingresado no es valido. No hay jugadas posibles. Ingrese nuevamente las coordenadas de los autitos.");
@@ -182,7 +184,7 @@ public class Tablero {
         return aux;
     }
 
-    public int obtenerDimension(){
+    public int obtenerDimension() {
         int dim = -1;
         while (dim != 5 && dim != 6 && dim != 7) {
             dim = Consola.pedirDatoNumerico("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");
@@ -191,11 +193,11 @@ public class Tablero {
                 Consola.throwError("Error: la dimension del tablero debe ser 5, 6 o 7.");
             }
         }
-        
+
         return dim;
     }
-    
-    public int obtenerCantidadAutos(){
+
+    public int obtenerCantidadAutos() {
         int n = 0;
         while (n < 3 || n > 12) {
             n = Consola.pedirDatoNumerico("Ingrese la cantidad de autos deseados para el tablero (entre 3 y 12): ");
@@ -204,52 +206,58 @@ public class Tablero {
                 Consola.throwError("Error: la cantidad de autos debe ser entre 3 y 12.");
             }
         }
-        
+
         return n;
     }
-    
-    public boolean autoTieneMovimientoPosible(Autito[][] tablero, int i, int j, int[][] direcciones) {
+
+    public Autito obtenerMovimientoAuto(Autito[][] configuracion, int i, int j) {
+        if (configuracion == null) {
+            configuracion = this.getConfiguracion();
+        }
+        boolean tieneMovimientoPosible = false;
+        Autito autoChocar = null;
+        int n = configuracion.length;
+        Autito auto = configuracion[i][j];
+
+        if (auto != null) {
+            for (int rotacion = 1; rotacion <= 3; rotacion++) {
+                int nuevaDireccion = auto.rotar(rotacion);
+                int[] movimiento = this.getDirecciones()[nuevaDireccion];
+
+                int fila = i + movimiento[0];
+                int columna = j + movimiento[1];
+                while (fila >= 0 && fila < n && columna >= 0 && columna < n && !tieneMovimientoPosible) {
+                    if (configuracion[fila][columna] != null) {
+                        tieneMovimientoPosible = true;
+                        autoChocar = configuracion[fila][columna];
+                    }
+                    fila += movimiento[0];
+                    columna += movimiento[1];
+                }
+            }
+        }
+        return autoChocar;
+    }
+
+    public boolean validarConfiguracion(Autito[][] configuracion) {
         boolean esValidoTablero = false;
-        int n = tablero.length;
-        Autito auto = tablero[i][j];
-
-        for (int rotacion = 1; rotacion <= 3; rotacion++) {
-            int nuevaDireccion = auto.rotar(rotacion);
-            int[] movimiento = direcciones[nuevaDireccion];
-
-            int fila = i + movimiento[0];
-            int columna = j + movimiento[1];
-            while (fila >= 0 && fila < n && columna >= 0 && columna < n) {
-                if (!esValidoTablero && tablero[fila][columna] != null) {
+        for (int i = 0; i < configuracion.length; i++) {
+            for (int j = 0; j < configuracion[i].length; j++) {
+                if (!esValidoTablero && configuracion[i][j] != null && obtenerMovimientoAuto(configuracion, i, j) != null) {
                     esValidoTablero = true;
                 }
-                fila += movimiento[0];
-                columna += movimiento[1];
             }
         }
         return esValidoTablero;
     }
 
-    public boolean esValido(Autito[][] tablero) {
-        boolean esValidoTablero = false;
-        int[][] direcciones = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        for (int i = 0; i < tablero.length; i++) {
-            for (int j = 0; j < tablero[i].length; j++) {
-                if (!esValidoTablero && tablero[i][j] != null && autoTieneMovimientoPosible(tablero, i, j, direcciones)) {
-                    esValidoTablero = true;
-                }
-            }
-        }
-        return esValidoTablero;
-    }
-
-    public ArrayList<String> obtenerPosiblesMovimientos(Autito[][] tablero) {
+    public ArrayList<String> obtenerPosiblesMovimientos() {
+        Autito[][] config = this.getConfiguracion();
         ArrayList<String> posiblesMovimientos = new ArrayList<>();
-        int[][] direcciones = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        for (int i = 0; i < tablero.length; i++) {
-            for (int j = 0; j < tablero[i].length; j++) {
-                if (tablero[i][j] != null && autoTieneMovimientoPosible(tablero, i, j, direcciones)) {
-                    Autito auto = tablero[i][j];
+        for (int i = 0; i < config.length; i++) {
+            for (int j = 0; j < config[i].length; j++) {
+                if (config[i][j] != null && obtenerMovimientoAuto(config, i, j) != null) {
+                    Autito auto = config[i][j];
                     posiblesMovimientos.add(auto.toString());
                 }
             }
@@ -257,8 +265,32 @@ public class Tablero {
         return posiblesMovimientos;
     }
 
+    public void procesarChoque(int fila, int columna) {
+        Autito autoSeleccionado = this.getConfiguracion()[fila][columna];
+        Autito autoChocado = this.obtenerMovimientoAuto(null, fila, columna);
+        this.eliminarAutoChocado(autoChocado);
+        autoSeleccionado.chocar(autoChocado.getFila(), autoChocado.getColumna());
+
+        this.getConfiguracion()[autoChocado.getFila()][autoChocado.getColumna()] = autoSeleccionado;
+        this.getConfiguracion()[fila][columna] = null;
+    }
+
     public void rotar() {
-        //TODO: rotar tablero
+        Autito[][] configOriginal = this.getConfiguracion();
+        int dim = this.getDimension();
+        Autito[][] configRotada = new Autito[dim][dim];
+
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                Autito auto = configOriginal[i][j];
+                if (auto != null) {
+                    auto.setDireccion(auto.rotar(1));
+                }
+                configRotada[j][dim - 1 - i] = auto;
+            }
+        }
+
+        this.setConfiguracion(configRotada);
     }
 
     public int getDimension() {
@@ -279,6 +311,10 @@ public class Tablero {
 
     public ArrayList<Color> getListaColores() {
         return this.listaColores;
+    }
+
+    public int[][] getDirecciones() {
+        return Direcciones;
     }
 
     public void setListaColores(ArrayList<Color> listaColores) {

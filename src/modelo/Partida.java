@@ -1,6 +1,5 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package modelo;
 
 import java.util.ArrayList;
@@ -12,11 +11,16 @@ public class Partida {
     private Jugador j1;
     private Jugador j2;
     private Tablero tablero;
+    private Jugador jugadorActual;
 
     public Partida(Jugador j1, Jugador j2) {
         this.setJugador1(j1);
         this.setJugador2(j2);
+        this.setJugadorActual(j1);
         this.seleccionarTablero();
+
+        Consola.pedirDatoString("Presione Enter para empezar la partida.");
+        this.empezarPartida();
     }
 
     public void seleccionarTablero() {
@@ -34,8 +38,6 @@ public class Partida {
         }
         ArrayList<Color> colores = this.determinarColores();
         this.setTablero(new Tablero(opcion, colores));
-        Consola.pedirDatoString("Presione Enter para empezar la partida.");
-        this.empezarPartida();
     }
 
     public ArrayList<Color> determinarColores() {
@@ -50,11 +52,92 @@ public class Partida {
     }
 
     public void empezarPartida() {
+        Consola.mostrarInstruccionesPartida();
+        boolean hayGanador = false;
+        boolean jugadorAbandona = false;
+        Consola.throwImportante("Turno: " + this.getJugadorActual());
+        String input;
+        while (!hayGanador && !jugadorAbandona) {
+            input = Consola.pedirDatoString("Ingrese su jugada: ").toUpperCase();
+            if (input.isEmpty()) {
+                Consola.throwError("Debe ingresar una jugada.");
+            } else {
+                switch (input.charAt(0)) {
+                    case 'S':
+                        Consola.throwInfo("Autitos seleccionables:");
+                        Consola.listar(this.getTablero().obtenerPosiblesMovimientos());
+                        break;
+                    case 'X':
+                        jugadorAbandona = true;
+                        break;
+                    case 'R':
+                        this.getTablero().rotar();
+                        this.cambiarTurno();
+                        break;
+                    default:
+                        if (input.length() == 2) {
+                            if (this.procesarJugada(input)) {
+                                this.cambiarTurno();
+                            } else {
+                                Consola.throwError("Las coordenadas ingresadas no son validas, ingrese otras.");
+                            }
+                        } else {
+                            Consola.throwError("No se reconoce la opcion seleccionada.");
+                            Consola.mostrarInstruccionesPartida();
+                        }
+                        break;
+                }
+            }
+
+            if (!jugadorAbandona) {
+                hayGanador = this.hayGanador();
+            }
+        }
+
+        this.terminarPartida(jugadorAbandona);
+    }
+
+    public void terminarPartida(boolean huboAbandono) {
+        if (huboAbandono) {
+            Jugador jugadorAbandona = this.getJugadorActual();
+        }
 
     }
 
-    public void terminarPartida() {
+    public boolean procesarJugada(String input) {
+        int fila = input.charAt(0) - 'A';
+        int columna = Character.getNumericValue(input.charAt(1)) - 1;
+        Tablero tablero = this.getTablero();
+        boolean coordenadasValidas = tablero.obtenerMovimientoAuto(null, fila, columna) != null;
+        if (coordenadasValidas) {
+            tablero.procesarChoque(fila, columna);
+        }
 
+        return coordenadasValidas;
+    }
+
+    public boolean hayGanador() {
+        return this.getTablero().obtenerPosiblesMovimientos().isEmpty();
+    }
+
+    public void cambiarTurno() {
+        if (this.getJugadorActual().equals(j1)) {
+            this.setJugadorActual(j2);
+        } else {
+            this.setJugadorActual(j1);
+        }
+        Consola.renderizarTablero(this.getTablero());
+        if (!this.hayGanador()) {
+            Consola.throwImportante("Turno: " + this.getJugadorActual());
+        }
+    }
+
+    public Jugador getJugadorActual() {
+        return this.jugadorActual;
+    }
+
+    public void setJugadorActual(Jugador jugadorActual) {
+        this.jugadorActual = jugadorActual;
     }
 
     public Jugador getJugador1() {

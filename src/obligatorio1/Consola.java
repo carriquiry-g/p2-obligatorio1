@@ -1,11 +1,10 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package obligatorio1;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 import modelo.Autito;
 import modelo.Jugador;
@@ -14,7 +13,6 @@ import modelo.Tablero;
 public class Consola {
 
     public static char mostrarMenuPrincipal() {
-        Scanner scanner = new Scanner(System.in);
         throwInfo(" _______________________________________________________________________________________________________________________");
         throwInfo("|\t     _   _   _ _____ ___ _____ ___  ____     ____ _   _  ___   ____    _    ____   ___  ____  _____ ____  \t|");
         throwInfo("|\t    / \\ | | | |_   _|_ _|_   _/ _ \\/ ___|   / ___| | | |/ _ \\ / ___|  / \\  |  _ \\ / _ \\|  _ \\| ____/ ___| \t|");
@@ -35,7 +33,7 @@ public class Consola {
         return input.charAt(0);
     }
 
-    public static void mostrarRanking(List<Jugador> listaJugadores) {
+    public static void mostrarRanking(ArrayList<Jugador> listaJugadores) {
         //TODO: rehacer este sort usando Collections.sort y implements Comparable y compareTo en Jugador
         //ver en clase 19
         listaJugadores.sort(Comparator
@@ -62,7 +60,7 @@ public class Consola {
                     jugador.getPuntaje());
         }
         System.out.println("-".repeat(anchoTotal));
-        
+
         pedirDatoString("Presione Enter para volver al menu.");
     }
 
@@ -106,10 +104,10 @@ public class Consola {
         }
         return dato;
     }
-    
-    public static void renderizarTablero(Tablero tablero){
+
+    public static void renderizarTablero(Tablero tablero) {
         int dim = tablero.getDimension();
-        Autito[][] tab = tablero.getTablero();
+        Autito[][] configuracion = tablero.getConfiguracion();
 
         // Imprimir la primera fila con números
         System.out.print("    ");
@@ -142,10 +140,10 @@ public class Consola {
                 System.out.print("|");
                 for (int j = 0; j < dim; j++) {
                     String[] representacion;
-                    if (tab[i][j] == null) {
+                    if (configuracion[i][j] == null) {
                         representacion = new String[]{"    ", "    ", "    ", "    "};
                     } else {
-                        representacion = renderizarAutito(tab[i][j]);
+                        representacion = renderizarAutito(configuracion[i][j]);
                     }
                     System.out.print(representacion[l] + "|");
                 }
@@ -161,7 +159,7 @@ public class Consola {
         }
     }
 
-    public static String[] renderizarAutito(Autito autito){
+    public static String[] renderizarAutito(Autito autito) {
         String[] configuracion;
         String RESET = "\u001B[0m";
         String RED_TEXT_YELLOW_BG = "\u001B[31;43m";
@@ -205,5 +203,24 @@ public class Consola {
                 configuracion = new String[]{"    ", "    ", "    ", "    "};
         }
         return configuracion;
+    }
+
+    public static void mostrarInstruccionesPartida() {
+        throwImportante("En cada turno, los jugadores pueden optar por las siguientes opciones:");
+        throwInfo("1) Ingresar las coordenadas del auto que desean seleccionar para chocar. Ejemplo: 'A3'");
+        throwInfo("2) Ingresar 'S' para solicitar la lista de autos que pueden ser seleccionados (-1 punto).");
+        throwInfo("3) Ingresar 'X' para abandonar la partida (pierde la partida).");
+        throwInfo("4) Ingresar 'R' para rotar el tablero en sentido horario (pierde el turno).");
+        throwInfo("_".repeat(40));
+    }
+
+    public static void listar(ArrayList<String> lista) {
+        if (lista.isEmpty()) {
+            throwImportante("La lista está vacía.");
+        } else {
+            for (String s : lista) {
+                throwInfo(s);
+            }
+        }
     }
 }

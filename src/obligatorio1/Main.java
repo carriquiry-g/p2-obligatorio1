@@ -1,6 +1,5 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package obligatorio1;
 
 import modelo.Sistema;
@@ -10,7 +9,6 @@ public class Main {
     public static void main(String[] args) {
         Sistema sistema = new Sistema();
         inicializarJuego(sistema);
-
     }
 
     public static void inicializarJuego(Sistema sistema) {

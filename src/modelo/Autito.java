@@ -2,8 +2,6 @@
 //Gaston Carriquiry 230498
 package modelo;
 
-import java.util.Arrays;
-
 public class Autito {
 
     private int direccion;

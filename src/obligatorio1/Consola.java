@@ -219,7 +219,7 @@ public class Consola {
             throwImportante("La lista está vacía.");
         } else {
             for (String s : lista) {
-                throwInfo(s);
+                throwInfo("\t- " + s);
             }
         }
     }
@@ -236,10 +236,9 @@ public class Consola {
         throwInfo("");
         throwInfo("Ganador: " + ganador + " - Puntaje total: " + ganador.getPuntaje());
         System.out.print("Perdedor: " + perdedor + " - Puntaje total: " + perdedor.getPuntaje());
-        if(huboAbandono){
-        System.out.print(" (Abandono)");
+        if (huboAbandono) {
+            throwInfo(" (Abandono)");
         }
-        throwInfo("");
         throwInfo("");
 
         pedirDatoString("Presione Enter para volver al menu principal.");

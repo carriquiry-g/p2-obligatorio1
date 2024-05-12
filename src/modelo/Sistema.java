@@ -3,44 +3,22 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import obligatorio1.Consola;
 
 public class Sistema {
 
     private ArrayList<Jugador> listaJugadores;
-    private Partida partidaActual;
 
     public Sistema() {
         listaJugadores = new ArrayList<>();
-        this.agregarJugador(new Jugador("Juan", 25, "el_pro"));
-        this.agregarJugador(new Jugador("Ana", 30, "mvp_queen"));
     }
 
     public ArrayList<Jugador> getListaJugadores() {
         return listaJugadores;
     }
 
-    public Partida getPartidaActual() {
-        return partidaActual;
-    }
-
-    public void setPartidaActual(Partida partidaActual) {
-        this.partidaActual = partidaActual;
-    }
-
     public void agregarJugador(Jugador jugador) {
         this.getListaJugadores().add(jugador);
-    }
-
-    public void eliminarJugador(String alias) {
-        Iterator<Jugador> iterator = this.getListaJugadores().iterator();
-        while (iterator.hasNext()) {
-            Jugador jugador = iterator.next();
-            if (jugador.getAlias().equalsIgnoreCase(alias)) {
-                this.getListaJugadores().remove(jugador);
-            }
-        }
     }
 
     public Jugador registrarJugador() {
@@ -101,7 +79,6 @@ public class Sistema {
         }
 
         Partida partida = new Partida(j1, j2);
-        this.setPartidaActual(partida);
     }
 
     public Jugador seleccionarJugador(int numJugador, Jugador jugadorSeleccionado) {

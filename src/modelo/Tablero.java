@@ -3,7 +3,6 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import obligatorio1.Consola;
 
@@ -47,7 +46,7 @@ public class Tablero {
     public void eliminarAutoChocado(Autito autoEliminar) {
         this.getListaAutos().removeIf(auto -> auto.toString().equalsIgnoreCase(autoEliminar.toString()));
 
-        //* El codigo comentado da error ConcurrentModificationException.
+        //* El codigo comentado da error: ConcurrentModificationException.
         /*Iterator<Autito> iterator = this.getListaAutos().iterator();
         while (iterator.hasNext()) {
             Autito auto = iterator.next();
@@ -303,10 +302,6 @@ public class Tablero {
 
     public ArrayList<Autito> getListaAutos() {
         return this.listaAutos;
-    }
-
-    public void setListaAutos(ArrayList<Autito> listaAutos) {
-        this.listaAutos = listaAutos;
     }
 
     public ArrayList<Color> getListaColores() {

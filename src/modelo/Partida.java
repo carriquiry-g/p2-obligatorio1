@@ -78,8 +78,6 @@ public class Partida {
                     default:
                         if (input.length() == 2) {
                             if (this.procesarJugada(input)) {
-                                System.out.println("Ultimo turno");
-                                System.out.println(jugadorActual);
                                 this.cambiarTurno();
                             } else {
                                 Consola.throwError("Las coordenadas ingresadas no son validas, ingrese otras.");

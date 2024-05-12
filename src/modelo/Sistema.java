@@ -1,6 +1,5 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package modelo;
 
 import java.util.ArrayList;
@@ -107,7 +106,7 @@ public class Sistema {
 
     public Jugador seleccionarJugador(int numJugador, Jugador jugadorSeleccionado) {
         boolean seDefinioJugador = false;
-        Jugador jugadorElegido = new Jugador();
+        Jugador jugadorElegido = null;
 
         Consola.throwImportante("Seleccionando al jugador " + numJugador);
         Consola.throwInfo("Lista de jugadores: ");

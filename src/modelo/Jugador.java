@@ -1,6 +1,5 @@
 //Darian Saldaña 230846
 //Gaston Carriquiry 230498
-
 package modelo;
 
 public class Jugador {
@@ -13,13 +12,7 @@ public class Jugador {
     private int partidasPerdidas = 0;
     private int partidasAbandonadas = 0;
     private int puntaje = 0;
-    
-    public Jugador(){
-        this.setNombre("undefined");
-        this.setEdad(-1);
-        this.setAlias("undefined");
-    }
-    
+
     public Jugador(String nombre, int edad, String alias) {
         this.setNombre(nombre);
         this.setEdad(edad);
@@ -54,47 +47,47 @@ public class Jugador {
         return this.partidasTotales;
     }
 
-    public void setPartidasTotales(int partidasTotales) {
-        this.partidasTotales = partidasTotales;
+    public void sumarPartidaJugada() {
+        this.partidasTotales++;
     }
 
     public int getPartidasGanadas() {
         return this.partidasGanadas;
     }
 
-    public void setPartidasGanadas(int partidasGanadas) {
-        this.partidasGanadas = partidasGanadas;
+    public void sumarPartidaGanada() {
+        this.partidasGanadas++;
     }
 
     public int getPartidasPerdidas() {
         return this.partidasPerdidas;
     }
 
-    public void setPartidasPerdidas(int partidasPerdidas) {
-        this.partidasPerdidas = partidasPerdidas;
+    public void sumarPartidaPerdida() {
+        this.partidasPerdidas++;
     }
 
     public int getPartidasAbandonadas() {
         return this.partidasAbandonadas;
     }
 
-    public void setPartidasAbandonadas(int partidasAbandonadas) {
-        this.partidasAbandonadas = partidasAbandonadas;
+    public void sumarPartidaAbandonada() {
+        this.partidasAbandonadas++;
     }
 
     public int getPuntaje() {
         return this.puntaje;
     }
 
-    public void setPuntaje(int puntaje) {
-        this.puntaje = puntaje;
+    public void modificarPuntaje(int puntaje) {
+        this.puntaje += puntaje;
     }
 
     @Override
     public String toString() {
         return this.getNombre() + " (" + this.getAlias() + ")";
     }
-    
+
     public boolean equals(Jugador otroJugador) {
         return this.getAlias().equals(otroJugador.getAlias());
     }

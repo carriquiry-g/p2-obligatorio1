@@ -66,6 +66,7 @@ public class Partida {
                     case 'S':
                         Consola.throwInfo("Autitos seleccionables:");
                         Consola.listar(this.getTablero().obtenerPosiblesMovimientos());
+                        this.getJugadorActual().modificarPuntaje(-1);
                         break;
                     case 'X':
                         jugadorAbandona = true;
@@ -77,6 +78,8 @@ public class Partida {
                     default:
                         if (input.length() == 2) {
                             if (this.procesarJugada(input)) {
+                                System.out.println("Ultimo turno");
+                                System.out.println(jugadorActual);
                                 this.cambiarTurno();
                             } else {
                                 Consola.throwError("Las coordenadas ingresadas no son validas, ingrese otras.");
@@ -98,19 +101,36 @@ public class Partida {
     }
 
     public void terminarPartida(boolean huboAbandono) {
+        Jugador ganador;
+        Jugador perdedor;
+        int puntajePerdedor;
         if (huboAbandono) {
-            Jugador jugadorAbandona = this.getJugadorActual();
+            perdedor = this.getJugadorActual();
+            ganador = perdedor.equals(this.getJugador1()) ? this.getJugador2() : this.getJugador1();
+            perdedor.sumarPartidaAbandonada();
+            puntajePerdedor = -5;
+        } else {
+            ganador = this.getJugadorActual();
+            perdedor = ganador.equals(this.getJugador1()) ? this.getJugador2() : this.getJugador1();
+            perdedor.sumarPartidaPerdida();
+            puntajePerdedor = -2;
         }
 
+        ganador.modificarPuntaje(10);
+        ganador.sumarPartidaGanada();
+        ganador.sumarPartidaJugada();
+
+        perdedor.modificarPuntaje(puntajePerdedor);
+        perdedor.sumarPartidaJugada();
     }
 
     public boolean procesarJugada(String input) {
         int fila = input.charAt(0) - 'A';
         int columna = Character.getNumericValue(input.charAt(1)) - 1;
-        Tablero tablero = this.getTablero();
-        boolean coordenadasValidas = tablero.obtenerMovimientoAuto(null, fila, columna) != null;
+        Tablero tab = this.getTablero();
+        boolean coordenadasValidas = tab.obtenerMovimientoAuto(null, fila, columna) != null;
         if (coordenadasValidas) {
-            tablero.procesarChoque(fila, columna);
+            tab.procesarChoque(fila, columna);
         }
 
         return coordenadasValidas;
@@ -121,10 +141,12 @@ public class Partida {
     }
 
     public void cambiarTurno() {
-        if (this.getJugadorActual().equals(j1)) {
-            this.setJugadorActual(j2);
-        } else {
-            this.setJugadorActual(j1);
+        if (!this.hayGanador()) {
+            if (this.getJugadorActual().equals(j1)) {
+                this.setJugadorActual(j2);
+            } else {
+                this.setJugadorActual(j1);
+            }
         }
         Consola.renderizarTablero(this.getTablero());
         if (!this.hayGanador()) {

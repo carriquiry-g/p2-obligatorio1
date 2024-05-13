@@ -2,7 +2,7 @@
 //Gaston Carriquiry 230498
 package modelo;
 
-public class Jugador {
+public class Jugador implements Comparable<Jugador> {
 
     private String nombre;
     private int edad;
@@ -90,5 +90,14 @@ public class Jugador {
 
     public boolean equals(Jugador otroJugador) {
         return this.getAlias().equals(otroJugador.getAlias());
+    }
+
+    @Override
+    public int compareTo(Jugador that) {
+        int comparador = Integer.compare(that.puntaje, this.puntaje);
+        if (comparador == 0) {
+            comparador = this.getAlias().compareTo(that.getAlias());
+        }
+        return comparador;
     }
 }

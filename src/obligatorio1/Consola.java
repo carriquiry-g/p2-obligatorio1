@@ -3,6 +3,7 @@
 package obligatorio1;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -34,11 +35,7 @@ public class Consola {
     }
 
     public static void mostrarRanking(ArrayList<Jugador> listaJugadores) {
-        //TODO: rehacer este sort usando Collections.sort y implements Comparable y compareTo en Jugador
-        //ver en clase 19
-        listaJugadores.sort(Comparator
-                .comparingInt(Jugador::getPuntaje).reversed()
-                .thenComparing(Jugador::getAlias));
+        Collections.sort(listaJugadores);
 
         String titulo = "RANKING";
         int anchoTotal = 75;

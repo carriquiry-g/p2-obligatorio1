@@ -65,7 +65,7 @@ public class Sistema {
         Jugador j1;
         Jugador j2;
         if (this.getListaJugadores().isEmpty()) {
-            Consola.throwImportante("No hay jugadores registrados. A continuacion registre ambos jugadores.");
+            Consola.throwImportante("No hay jugadores registrados. A continuacion se le solicitara registrar ambos jugadores.");
             j1 = registrarJugador();
             j2 = registrarJugador();
         } else if (this.getListaJugadores().size() == 1) {

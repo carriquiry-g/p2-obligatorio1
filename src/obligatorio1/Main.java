@@ -34,6 +34,7 @@ public class Main {
                 Consola.throwImportante("Juego finalizado");
                 break;
             default:
+                Consola.throwError("Opcion no reconocida. Ingrese nuevamente");
                 inicializarJuego(sistema);
                 break;
         }

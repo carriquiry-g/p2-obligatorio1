@@ -67,8 +67,8 @@ public class Tablero {
     public Autito[][] crearTableroAlAzar() {
         Random random = new Random();
 
-        int dim = this.obtenerDimension();
-        int n = obtenerCantidadAutos();
+        int dim = this.pedirDimension();
+        int n = pedirCantidadAutos();
         this.setDimension(dim);
 
         Autito[][] aux = new Autito[dim][dim];
@@ -123,9 +123,9 @@ public class Tablero {
     }
 
     public Autito[][] crearTableroConfigurado() {
-        int dim = this.obtenerDimension();
+        int dim = this.pedirDimension();
         this.setDimension(dim);
-        int n = obtenerCantidadAutos();
+        int n = pedirCantidadAutos();
 
         Autito[][] aux = new Autito[dim][dim];
         this.setConfiguracion(aux);
@@ -183,7 +183,7 @@ public class Tablero {
         return aux;
     }
 
-    public int obtenerDimension() {
+    public int pedirDimension() {
         int dim = -1;
         while (dim != 5 && dim != 6 && dim != 7) {
             dim = Consola.pedirDatoNumerico("Ingrese la dimension deseada para el tablero (5, 6 o 7): ");
@@ -196,7 +196,7 @@ public class Tablero {
         return dim;
     }
 
-    public int obtenerCantidadAutos() {
+    public int pedirCantidadAutos() {
         int n = 0;
         while (n < 3 || n > 12) {
             n = Consola.pedirDatoNumerico("Ingrese la cantidad de autos deseados para el tablero (entre 3 y 12): ");

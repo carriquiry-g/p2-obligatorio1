@@ -4,7 +4,6 @@ package obligatorio1;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import modelo.Autito;
@@ -85,7 +84,7 @@ public class Consola {
         Scanner scanner = new Scanner(System.in);
         System.out.print(mensaje);
         String dato = scanner.nextLine();
-        return dato;
+        return dato.trim();
     }
 
     public static int pedirDatoNumerico(String mensaje) {
